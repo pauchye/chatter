@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class='row text-center'>
+        <div class='col'>
+            <h1>Welcome to Chatter</h1>
+        </div>
+    </div>
+    <div class='row mb-3'>
+        <div class='col-md-4 mx-auto col-10'>
+            <form id="chat-create-form" action="/create-chats" method='POST' class='form'>
+                {% csrf_token %}
+                <input type="hidden" value="/" name="next">
+                <textarea class="form-control" name="content" placeholder="what's on your mind?.."></textarea> 
+                <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class='row' id="chats">
+        Replace me
+    </div>
+    <script>
+
+        function handleChatCreateFormDidSubmit(event){
+            event.preventDefault()
+        }
+
+        const chatCreateFormEl = document.getElementById("chat-create-form")
+        chatCreateFormEl.addEventListener("submit", handleChatCreateFormDidSubmit)
+        
+        const chatsElement = document.getElementById("chats")
+        
+        const loadChats = function(chatsElement) {
+            const xhr = new XMLHttpRequest()
+            const method = "GET";
+            const url = "/chats";
+            const responseType = "json";
+            xhr.responseType = responseType;
+            xhr.open(method, url);
+            xhr.onload = function() {
+                let listedItems = xhr.response.response
+                let finalChatStr = '';
+                for ( i = 0; i < listedItems.length; i++ ){
+                    let curItem = formatChatElelm(listedItems[i])
+                    finalChatStr += curItem
+                }
+                chatsElement.innerHTML = finalChatStr;
+            }
+
+            xhr.send()
+        }
+
+
+        function handleDidLike (chat_id, currentCount){
+            
+        }
+
+        function LikeBtn(chat) {
+            return "<button class='btn btn-primary btn-sm' onClick=handleDidLike(' + chat.id + ',' +  chat.like + ')>" + chat.likes + " Like</button>"
+        }
+
+        function formatChatElelm(chat){
+            let formatted =  "<div class='col-12 col-md-10 mx-auto border rounded py-3 mb-4 chat' id='chat-" + 
+            chat.id + "'><p>" + chat.content + "</p><div class='btn-group'>"
+            + LikeBtn(chat) + '</div></div>'
+            return formatted
+        }
+         
+        loadChats(chatsElement)
+
+    </script>
+{% endblock content %}

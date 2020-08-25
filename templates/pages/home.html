@@ -10,8 +10,9 @@
         <div class='col-md-4 mx-auto col-10'>
             <form id="chat-create-form" action="/create-chats" method='POST' class='form'>
                 {% csrf_token %}
+                <div class="d-none alert-danger" id='chat-create-form-error'></div>
                 <input type="hidden" value="/" name="next">
-                <textarea class="form-control" name="content" placeholder="what's on your mind?.."></textarea> 
+                <textarea required="required" class="form-control" name="content" placeholder="what's on your mind?.."></textarea> 
                 <button type="submit" class="btn btn-primary btn-sm">Submit</button>
             </form>
         </div>
@@ -22,8 +23,68 @@
     </div>
     <script>
 
+        function handleChatFormError(msg, display){
+            let myErrorDiv = document.getElementById('chat-create-form-error')
+            if (display === true){
+                myErrorDiv.setAttribute("class", "d-block alert alert-danger")
+                myErrorDiv.innerHTML = msg
+            } else {
+                myErrorDiv.setAttribute("class", "d-none alert alert-danger")
+            }
+        }
+
         function handleChatCreateFormDidSubmit(event){
-            event.preventDefault()
+            event.preventDefault();
+            const myForm = event.target;
+            const myFormData = new FormData(myForm);
+            const url = myForm.getAttribute("action")
+            const method = myForm.getAttribute("method")
+            const xhr = new XMLHttpRequest();
+            xhr.open(method, url);
+            //xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+            xhr.onload = function(){
+                if (xhr.status === 201){
+                    handleChatFormError("", false)
+                    const serverResponse = xhr.response;
+                    const newChatJson = JSON.parse(serverResponse)
+                    const newChatElem = formatChatElelm(newChatJson)
+                    const ogHTML = chatsElement.innerHTML;
+                    chatsElement.innerHTML = newChatElem + ogHTML;
+                    myForm.reset();
+                } else if (xhr.status === 400){
+                    const errorJson = xhr.response;
+                    const contentError = errorJson.content;
+                    let contErMsg;
+                    if (contentError) {
+                        contErMsg = contentError[0];
+                        if (contErMsg) {
+                            handleChatFormError(contErMsg, true)
+                        } else {
+                            alert("Some error occured. Please try again")
+                        }
+                    } else {
+                        alert("Some error occured. Please try again")
+                    }
+                    console.log(errorJson)
+                } else if (xhr.status === 401){
+                    alert("Please log in...")
+                    window.location.href = './login'
+                } else if (xhr.status === 403){
+                    alert("Please log in...")
+                } else if (xhr.status === 500){
+                    alert("There was a server error. Please try again later...")
+                }
+                
+                // console.log('serverResponse', serverResponse)
+                // const chatsEl = document.getElementById("chats")
+                // loadChats(chatsEl); 
+            }
+            xhr.onerror = function() {
+                alert("An error occured. Please try something else...")
+            }
+            xhr.send(myFormData)
+            // console.log("hi from home.html")
         }
 
         const chatCreateFormEl = document.getElementById("chat-create-form")
@@ -38,8 +99,10 @@
             const responseType = "json";
             xhr.responseType = responseType;
             xhr.open(method, url);
+            xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
             xhr.onload = function() {
-                let listedItems = xhr.response.response
+                let listedItems = xhr.response
                 let finalChatStr = '';
                 for ( i = 0; i < listedItems.length; i++ ){
                     let curItem = formatChatElelm(listedItems[i])
@@ -49,6 +112,8 @@
             }
 
             xhr.send()
+            
+            // console.log("hi from home.html 2")
         }
 
 

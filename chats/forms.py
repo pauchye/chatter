@@ -1,8 +1,8 @@
 from django import forms
-
+from django.conf import settings
 from .models import Chat
 
-MAX_LENGTH = 240
+MAX_LENGTH = settings.MAX_LENGTH
 
 class ChatForm(forms.ModelForm):
     class Meta:

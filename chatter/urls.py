@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 
 from chats.views import home_view
-from chats.views import chat_detail_view, chat_list_view, chat_create_view
+from chats.views import chat_detail_view, chat_list_view, chat_create_view, chat_delete_view
 
 # urlpatterns = [
 #     url('^admin/', admin.site.urls),
@@ -31,4 +31,6 @@ urlpatterns = [
     path('chats', chat_list_view),
     path('create-chats', chat_create_view),
     path('chats/<int:chat_id>', chat_detail_view),
+    path('api/chats/<int:chat_id>/delete', chat_delete_view),
+    
 ]

@@ -4,7 +4,7 @@ from .models import Chat
 from .forms import ChatForm
 from django.utils.http import is_safe_url
 from django.conf import settings
-from .serializers import ChatSerializer
+from .serializers import ChatSerializer, ChatActionSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
@@ -37,6 +37,7 @@ def chat_detail_view(request, chat_id, *args, **kwargs):
 
 
 @api_view(['DELETE', 'POST'])
+@permission_classes([IsAuthenticated])
 def chat_delete_view(request, chat_id, *args, **kwargs):
     qs = Chat.objects.filter(id=chat_id)
     if not qs.exists():
@@ -47,6 +48,33 @@ def chat_delete_view(request, chat_id, *args, **kwargs):
     obj = qs.first()
     obj.delete()
     return Response({"message": "This post has been deleted"}, status=200)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def chat_action_view(request, *args, **kwargs):
+    # print(request.POST, request.data)
+    serializer = ChatActionSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        data = serializer.validated_data
+        chat_id = data.get("id")
+        action = data.get("action")
+        qs = Chat.objects.filter(id=chat_id)
+        if not qs.exists():
+            return Response({}, status=404)
+        obj = qs.first()
+        if action == "like":
+            serializer = ChatSerializer(obj)
+            obj.likes.add(request.user)
+            return Response(serializer.data, status=200)
+        elif action == "unlike":
+            obj.likes.remove(request.user)
+        elif action == "repost":
+            pass
+            
+
+    return Response({}, status=200)
+
 
 
 @api_view(['POST'])

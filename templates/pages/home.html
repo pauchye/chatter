@@ -116,19 +116,64 @@
             // console.log("hi from home.html 2")
         }
 
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
 
-        function handleDidLike (chat_id, currentCount){
-            
+        function  handleDidLike(chat_id, currentCount, action){
+            const csrftoken = getCookie('csrftoken');
+            console.log(chat_id, currentCount)
+            const url = "/api/chats/action"
+            const method="POST"
+            const data = JSON.stringify({
+                id: chat_id,
+                action: action
+            })
+            const xhr = new XMLHttpRequest()
+            xhr.open(method, url)
+            xhr.setRequestHeader("Content-Type", "application/json")
+            xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+            xhr.setRequestHeader("X-CSRFToken", csrftoken)
+            xhr.onload = function() {
+                console.log(xhr.status, xhr.response)
+                loadChats(chatsElement)
+            }
+            xhr.send(data)
+            return 
         }
 
         function LikeBtn(chat) {
-            return "<button class='btn btn-primary btn-sm' onClick=handleDidLike(' + chat.id + ',' +  chat.like + ')>" + chat.likes + " Like</button>"
+            return "<button class='btn btn-primary btn-sm' onclick=handleDidLike(" + 
+            chat.id + "," + chat.likes + ",'like')>" + chat.likes + " Likes</button>"
+        }
+
+        function UnLikeBtn(chat) {
+            return "<button class='btn btn-outline-primary btn-sm' onclick=handleDidLike(" + 
+            chat.id + "," + chat.likes + ",'unlike')> Unlike</button>"
+        }
+
+        function RePostBtn(chat) {
+            return "<button class='btn btn-outline-success btn-sm' onclick=handleDidLike(" + 
+            chat.id + "," + chat.likes + ",'repost')> Unlike</button>"
         }
 
         function formatChatElelm(chat){
             let formatted =  "<div class='col-12 col-md-10 mx-auto border rounded py-3 mb-4 chat' id='chat-" + 
             chat.id + "'><p>" + chat.content + "</p><div class='btn-group'>"
-            + LikeBtn(chat) + '</div></div>'
+            + LikeBtn(chat) + UnLikeBtn(chat) +  RePostBtn(chat) + '</div></div>'
             return formatted
         }
          

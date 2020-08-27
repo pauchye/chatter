@@ -25,8 +25,22 @@ SECRET_KEY = '0r2g@&=n2lltap%&@&!y0+@wo-n$+os7&o5s^zk0$i35=d3-9-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
 LOGIN_URL = "/login"
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 MAX_LENGTH = 240
 CHAT_ACTION_OPTIONS = ["like", "unlike", "repost"]
@@ -41,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 # third party
     'rest_framework',
+    'corsheaders',
 # internal
     'chats', 
 ]
@@ -48,7 +63,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',    
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -128,6 +144,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_URLS_REGEX = r'^/api/.*$'
 
 DEFAULT_RENDERER_CLASSES = [
         'rest_framework.renderers.JSONRenderer',

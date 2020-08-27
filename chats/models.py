@@ -20,11 +20,15 @@ class Chat(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
 
-    def __str__(self):
-        return self.content
+    # def __str__(self):
+    #     return self.content
 
     class Meta:
         ordering = ["-id"]
+
+    @property
+    def is_repost(self):
+        return self.parent != None
 
     def serialize(self):
         return {

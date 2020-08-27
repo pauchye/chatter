@@ -140,6 +140,7 @@
             const data = JSON.stringify({
                 id: chat_id,
                 action: action
+
             })
             const xhr = new XMLHttpRequest()
             xhr.open(method, url)
@@ -167,7 +168,7 @@
 
         function RePostBtn(chat) {
             return "<button class='btn btn-outline-success btn-sm' onclick=handleDidLike(" + 
-            chat.id + "," + chat.likes + ",'repost')> Unlike</button>"
+            chat.id + "," + chat.likes + ",'repost')> Repost</button>"
         }
 
         function formatChatElelm(chat){

@@ -15,7 +15,7 @@ Including another URLconf
 """
 # from django.conf.urls import url
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path, include
 
 from chats.views import home_view
 from chats.views import chat_detail_view, chat_list_view, chat_create_view, chat_delete_view, chat_action_view
@@ -31,7 +31,8 @@ urlpatterns = [
     path('chats', chat_list_view),
     path('create-chats', chat_create_view),
     path('chats/<int:chat_id>', chat_detail_view),
-    path("api/chats/action", chat_action_view),
-    path('api/chats/<int:chat_id>/delete', chat_delete_view),
+    # path("api/chats/action", chat_action_view),
+    # path('api/chats/<int:chat_id>/delete', chat_delete_view),
+    path('api/chats/', include('chats.urls'))
     
 ]

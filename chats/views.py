@@ -4,7 +4,7 @@ from .models import Chat
 from .forms import ChatForm
 from django.utils.http import is_safe_url
 from django.conf import settings
-from .serializers import ChatSerializer, ChatActionSerializer
+from .serializers import ChatSerializer, ChatActionSerializer, ChatCreateSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
@@ -53,13 +53,16 @@ def chat_delete_view(request, chat_id, *args, **kwargs):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def chat_action_view(request, *args, **kwargs):
-    # print(request.POST, request.data)
+    print(request)
     serializer = ChatActionSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
+        
         data = serializer.validated_data
         chat_id = data.get("id")
         action = data.get("action")
         qs = Chat.objects.filter(id=chat_id)
+        content = data.get("content")
+        print("data", data)
         if not qs.exists():
             return Response({}, status=404)
         obj = qs.first()
@@ -70,7 +73,15 @@ def chat_action_view(request, *args, **kwargs):
         elif action == "unlike":
             obj.likes.remove(request.user)
         elif action == "repost":
-            pass
+            parent_obj = obj
+            new_chat = Chat.objects.create(user=request.user, parent=parent_obj, content=content )
+            serializer = ChatSerializer(new_chat)
+            # print("data", data)
+            # print("parent", new_chat.parent)
+            # print("parent content", parent_obj.content)
+            # print("parent likes", parent_obj.likes)
+            # print("parent content", new_chat.parent.content)
+            return Response(serializer.data, status=200)
             
 
     return Response({}, status=200)
@@ -81,7 +92,7 @@ def chat_action_view(request, *args, **kwargs):
 # @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def chat_create_view(request, *args, **kwargs):
-    serializer = ChatSerializer(data=request.POST)
+    serializer = ChatCreateSerializer(data=request.POST)
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
         return Response(serializer.data, status=201)

@@ -16,6 +16,9 @@ Including another URLconf
 # from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, re_path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.generic import TemplateView
 
 from chats.views import home_view
 from chats.views import chat_detail_view, chat_list_view, chat_create_view, chat_delete_view, chat_action_view
@@ -28,11 +31,14 @@ from chats.views import chat_detail_view, chat_list_view, chat_create_view, chat
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_view),
+    path('react/', TemplateView.as_view(template_name='react_via_dj.html')),
     path('chats', chat_list_view),
     path('create-chats', chat_create_view),
     path('chats/<int:chat_id>', chat_detail_view),
     # path("api/chats/action", chat_action_view),
     # path('api/chats/<int:chat_id>/delete', chat_delete_view),
     path('api/chats/', include('chats.urls'))
-    
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class='row text-center'>
+    <div class='row text-center d-none'>
         <div class='col'>
             <h1>Welcome to Chatter</h1>
         </div>
     </div>
-    <div class='row mb-3'>
+    <div class='row mb-3 d-none'>
         <div class='col-md-4 mx-auto col-10'>
             <form id="chat-create-form" action="/create-chats" method='POST' class='form'>
                 {% csrf_token %}
@@ -17,8 +17,8 @@
             </form>
         </div>
     </div>
-    
-    <div class='row' id="chats">
+    <div id="chats-root"></div>
+    <div class='row d-none' id="chats">
         Replace me
     </div>
     <script>

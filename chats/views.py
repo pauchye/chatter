@@ -72,6 +72,8 @@ def chat_action_view(request, *args, **kwargs):
             return Response(serializer.data, status=200)
         elif action == "unlike":
             obj.likes.remove(request.user)
+            serializer = ChatSerializer(obj)
+            return Response(serializer.data, status=200)
         elif action == "repost":
             parent_obj = obj
             new_chat = Chat.objects.create(user=request.user, parent=parent_obj, content=content )
@@ -92,7 +94,8 @@ def chat_action_view(request, *args, **kwargs):
 # @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def chat_create_view(request, *args, **kwargs):
-    serializer = ChatCreateSerializer(data=request.POST)
+    # print(request.data)
+    serializer = ChatCreateSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
         return Response(serializer.data, status=201)

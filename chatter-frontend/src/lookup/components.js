@@ -15,7 +15,7 @@ function getCookie(name) {
 }
 
 
-function lookup(method, endpoint, callback, data){
+export function lookup(method, endpoint, callback, data){
     let jsonData;
     if (data){
         jsonData = JSON.stringify(data)
@@ -39,13 +39,7 @@ function lookup(method, endpoint, callback, data){
     xhr.onerror = function(e) {
         callback({"message": "There was an error"}, 400)
     }
-    xhr.send()
+    // console.log('jsonData', jsonData)
+    xhr.send(jsonData)
 }
 
-export function loadChats(callback) {
-    lookup("GET", "chats", callback)
-}
-
-export function createChats(newChat, callback) {
-    lookup("POST", "chats/create", callback, {content: newChat})
-}

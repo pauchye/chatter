@@ -1,3 +1,3 @@
-import { loadChats, createChats } from './components'
+import { lookup } from './components'
 
-export { loadChats, createChats } 
+export { lookup } 

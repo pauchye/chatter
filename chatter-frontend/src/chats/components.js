@@ -3,6 +3,7 @@ import {apiCreateChats, apiChatList, apiChatAction} from './lookup'
 import {ActionBtn} from './buttons'
 import {ChatList} from './list'
 import {ChatForm} from './chatform'
+import {apiChatDetail} from './lookup'
 
 export function ChatsComponents(props){
 
@@ -20,4 +21,8 @@ export function ChatsComponents(props){
             <ChatList newChats={newChats} {...props}/>
         </div>
     )
+}
+
+export function ChatsDetail(props){
+    
 }

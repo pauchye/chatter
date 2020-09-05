@@ -20,6 +20,14 @@ export function Chat(props) {
     const [ actionChat, setActionChat ] = useState(chat ? chat : null)
     const className = props.className || 'col-10 mx-auto col-md-6'
     
+    
+    
+    const path = window.location.pathname
+    const match = path.match(/(?<chatid>\d+)/)
+    const urlChatId = match ? match.groups.chatid : -1
+
+    const isDetail = `${chat.id}` === `${urlChatId}`
+
     const handlePerformAction = (newActionChat, status) => {
         if (status === 200){
             setActionChat(newActionChat)
@@ -31,17 +39,25 @@ export function Chat(props) {
         
     }
     
+    const handleClick = (event) => {
+        event.preventDefault()
+        window.location.href = `/${chat.id}`
+    }
+
     return <div className={className}>
         <div>
             <ParentChat chat={chat}/>
            <p>{chat.id} - {chat.content}</p> 
            
         </div>        
-      {(actionChat && hideActions !== true) && <div className='btn btn-group'>
+      <div className='btn btn-group'>
+        {(actionChat && hideActions !== true) && <React.Fragment>
         <ActionBtn chat={actionChat} didPerformAction={handlePerformAction} action={{type: "like", display: "Likes"}}/>
         <ActionBtn chat={actionChat} didPerformAction={handlePerformAction} action={{type: "unlike", display: "Unlike"}}/>
         <ActionBtn chat={actionChat} didPerformAction={handlePerformAction} action={{type: "repost", display: "Repost"}}/>   
+        </React.Fragment>}
+        {isDetail === true ? null : <button className="btn btn-outline-primary btn-sm" onClick={handleClick}> View </button>}
       </div>
-      }
+      
     </div>
 }

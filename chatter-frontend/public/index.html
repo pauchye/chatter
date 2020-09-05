@@ -29,6 +29,7 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id='chat-cont'></div>
     <div id="chats-root" data-username="olya" data-can post="false"></div>
     <!--
       This HTML file is a template.
@@ -40,5 +41,20 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    <script>
+      var path = window.location.pathname
+      var idRegex = /(?<chatid>\d+)/
+      var match = path.match(idRegex)
+      
+      if (match){
+        var chatId = match.groups.chatid
+        var mainChatEl = document.getElementById("chats-root")
+        mainChatEl.className = 'd-none'
+        var chatEl = "<div class='chat-root-detail' data-chat-id=" + chatId + " data-class-name='col-6 mx-auto'></div>"
+        var mainCont = document.getElementById("chat-cont")
+        mainCont.innerHTML = chatEl
+      }
+
+    </script>
   </body>
 </html>

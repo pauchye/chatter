@@ -4,6 +4,7 @@ import {ActionBtn} from './buttons'
 import {ChatList} from './list'
 import {ChatForm} from './chatform'
 import {apiChatDetail} from './lookup'
+import {Chat} from './chatitem'
 
 export function ChatsComponents(props){
 
@@ -24,5 +25,24 @@ export function ChatsComponents(props){
 }
 
 export function ChatsDetail(props){
+    const {chatId} = props
+    const [didLookup, setDidLookup] = useState(false)
+    const [chat, setChat] = useState(null)
+    const handleBackendLookup = (response, status) => {
+        if (status === 200){
+            setChat(response)
+        } else {
+            alert("There is no post")
+        }
+    }
     
+    useEffect(() => {
+        if (didLookup === false){
+            apiChatDetail(chatId, handleBackendLookup)
+            setDidLookup(true)
+        }
+    }, [chatId, didLookup, setDidLookup])
+
+            
+    return chat === null ? null : <Chat chat={chat} className={props.className}/>
 }

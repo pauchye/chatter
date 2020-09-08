@@ -21,7 +21,22 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
 from chats.views import home_view
-from chats.views import chat_detail_view, chat_list_view, chat_create_view, chat_delete_view, chat_action_view
+from chats.views import (
+    # chat_detail_view, 
+    # chat_list_view, 
+    # chat_create_view, 
+    # chat_delete_view, 
+    # chat_action_view
+    chats_list_view,
+    chats_detail_view,
+    chats_profile_view,
+)
+
+from accounts.views import (
+    login_view,
+    logout_view,
+    register_view,
+)
 
 # urlpatterns = [
 #     url('^admin/', admin.site.urls),
@@ -30,14 +45,21 @@ from chats.views import chat_detail_view, chat_list_view, chat_create_view, chat
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home_view),
-    path('react/', TemplateView.as_view(template_name='react_via_dj.html')),
-    path('chats', chat_list_view),
-    path('create-chats', chat_create_view),
-    path('chats/<int:chat_id>', chat_detail_view),
+    path('', chats_list_view),
+    path('login/', login_view),
+    path('logout/', logout_view),
+    path('registr/', register_view),
+    path('<int:chat_id>', chats_detail_view),
+    path('profile/<str:username>', chats_profile_view),
+    # path('', chats_list_view),
+    # path('', home_view),
+    # path('react/', TemplateView.as_view(template_name='react_via_dj.html')),
+    # path('chats', chat_list_view),
+    # path('create-chats', chat_create_view),
+    # path('chats/<int:chat_id>', chat_detail_view),
     # path("api/chats/action", chat_action_view),
     # path('api/chats/<int:chat_id>/delete', chat_delete_view),
-    path('api/chats/', include('chats.urls'))
+    path('api/chats/', include('chats.api.urls'))
 ]
 
 if settings.DEBUG:

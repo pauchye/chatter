@@ -58,7 +58,8 @@ INSTALLED_APPS = [
     'corsheaders',
 # internal
     'chats', 
-    'accounts'
+    'accounts',
+    'profiles'
 ]
 
 MIDDLEWARE = [

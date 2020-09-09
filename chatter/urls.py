@@ -29,7 +29,7 @@ from chats.views import (
     # chat_action_view
     chats_list_view,
     chats_detail_view,
-    chats_profile_view,
+    # chats_profile_view,
 )
 
 from accounts.views import (
@@ -48,9 +48,9 @@ urlpatterns = [
     path('', chats_list_view),
     path('login/', login_view),
     path('logout/', logout_view),
-    path('registr/', register_view),
+    path('register/', register_view),
     path('<int:chat_id>', chats_detail_view),
-    path('profile/<str:username>', chats_profile_view),
+    path('profile/', include('profiles.urls')),
     # path('', chats_list_view),
     # path('', home_view),
     # path('react/', TemplateView.as_view(template_name='react_via_dj.html')),

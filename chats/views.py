@@ -25,8 +25,8 @@ def chats_list_view(request, *args, **kwargs):
 def chats_detail_view(request, chat_id, *args, **kwargs):
     return render(request, "chats/detail.html", context={"chat_id": chat_id})
 
-def chats_profile_view(request, username, *args, **kwargs):
-    return render(request, "chats/profile.html", context={"profile_username": username})
+# def chats_profile_view(request, username, *args, **kwargs):
+#     return render(request, "chats/profile.html", context={"profile_username": username})
 
 # @api_view(['GET'])
 # def chat_list_view(request, *args, **kwargs):
